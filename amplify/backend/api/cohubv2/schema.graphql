@@ -1,0 +1,101 @@
+# This is the GraphQL schema for CoHub v2
+
+type User
+  @model
+  @auth(rules: [{ allow: public }]) {
+  id: ID!
+  email: String!
+  name: String!
+  userType: UserType! # "client", "provider", or "admin"
+  address: String
+  city: String
+  state: String
+  phone: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum UserType {
+  CLIENT
+  PROVIDER
+  ADMIN
+}
+
+type ProviderProfile
+  @model
+  @auth(rules: [{ allow: public }]) {
+  id: ID!
+  userId: ID!
+  user: User @belongsTo(references: ["userId"])
+  specialties: [String!]!
+  hourlyRate: Float!
+  bio: String
+  backgroundCheckStatus: String # "pending", "approved", "rejected"
+  stripeAccountId: String
+  membershipStatus: String # "active", "inactive"
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type HelpRequest
+  @model
+  @auth(rules: [{ allow: public }]) {
+  id: ID!
+  clientId: ID!
+  client: User @belongsTo(references: ["clientId"])
+  title: String!
+  description: String!
+  specialty: String!
+  requestedDate: AWSDateTime!
+  requestedTime: String!
+  status: RequestStatus! # "pending", "assigned", "in_progress", "completed"
+  assignedProviderId: ID
+  assignedProvider: ProviderProfile @belongsTo(references: ["assignedProviderId"])
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum RequestStatus {
+  PENDING
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+type VideoSession
+  @model
+  @auth(rules: [{ allow: public }]) {
+  id: ID!
+  requestId: ID!
+  request: HelpRequest @belongsTo(references: ["requestId"])
+  chimeSessionToken: String
+  startTime: AWSDateTime
+  endTime: AWSDateTime
+  recordingUrl: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+type Payment
+  @model
+  @auth(rules: [{ allow: public }]) {
+  id: ID!
+  requestId: ID!
+  request: HelpRequest @belongsTo(references: ["requestId"])
+  amount: Float!
+  providerFee: Float!
+  serviceFee: Float!
+  tax: Float!
+  status: PaymentStatus! # "pending", "completed", "failed"
+  stripePaymentId: String
+  createdAt: AWSDateTime!
+  updatedAt: AWSDateTime!
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
