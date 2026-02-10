@@ -10,6 +10,11 @@
       "StackName": "amplify-cohubv2-dev-a2759",
       "StackId": "arn:aws:cloudformation:us-east-2:629614691284:stack/amplify-cohubv2-dev-a2759/6051e2f0-0622-11f1-8d17-0ac700de6fcf",
       "AmplifyAppId": "d2jd4tulnfk1sp"
+    },
+    "categories": {
+      "auth": {
+        "cohubv2b6bd32bf": {}
+      }
     }
   }
 }
