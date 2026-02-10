@@ -1,6 +1,7 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Authenticator } from '@aws-amplify/ui-react';
+import '@aws-amplify/ui-react/styles.css';
 import Header from './components/Header';
 import Home from './pages/Home';
 import ClientSignup from './pages/ClientSignup';
@@ -12,17 +13,21 @@ import './App.css';
 
 function App() {
   return (
-    <Router>
-      <Header />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/client-signup" element={<ClientSignup />} />
-        <Route path="/provider-signup" element={<ProviderSignup />} />
-        <Route path="/client-dashboard" element={<ClientDashboard />} />
-        <Route path="/provider-dashboard" element={<ProviderDashboard />} />
-        <Route path="/admin-dashboard" element={<AdminDashboard />} />
-      </Routes>
-    </Router>
+    <Authenticator>
+      {({ signOut, user }) => (
+        <Router>
+          <Header signOut={signOut} user={user} />
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/client-signup" element={<ClientSignup user={user} />} />
+            <Route path="/provider-signup" element={<ProviderSignup user={user} />} />
+            <Route path="/client-dashboard" element={<ClientDashboard user={user} />} />
+            <Route path="/provider-dashboard" element={<ProviderDashboard user={user} />} />
+            <Route path="/admin-dashboard" element={<AdminDashboard user={user} />} />
+          </Routes>
+        </Router>
+      )}
+    </Authenticator>
   );
 }
 
